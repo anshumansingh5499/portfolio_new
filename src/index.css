@@ -1,0 +1,136 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Shadows+Into+Light&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oleo+Script&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body, html {
+  background-color: #fffdf7;
+}
+
+.font-handwriting {
+  font-family: "Gloria Hallelujah", cursive;
+}
+
+.font-shadows {
+  font-family: 'Shadows Into Light', cursive;
+}
+
+.font-oleo {
+  font-family: 'Oleo Script', cursive;
+}
+
+/* --------------------------------------------------
+   5. Backgrounds & Textures
+-------------------------------------------------- */
+.paper-texture {
+  background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
+  background-size: cover;
+}
+
+.corkboard-bg {
+  background-image: url("https://www.transparenttextures.com/patterns/cork-board.png");
+  background-size: 300px 300px;
+  background-repeat: repeat;
+}
+
+/* --------------------------------------------------
+   6. Borders & Cards
+-------------------------------------------------- */
+.doodle-border {
+  border: 2px dashed rgba(0, 0, 0, 0.3);
+  border-radius: 0.75rem;
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.25);
+}
+
+.doodle-border {
+  border-style: dashed;
+  border-image: repeating-linear-gradient(
+    90deg,
+    black 0,
+    black 10px,
+    transparent 10px,
+    transparent 20px
+  ) 1;
+}
+
+.doodle-card {
+  border-style: dashed;
+  background: #fffef9;
+  box-shadow: 3px 3px 0px #000;
+}
+
+.doodle-text {
+  font-family: "Patrick Hand", cursive;
+  text-shadow: 1px 1px 0px #00000020;
+}
+
+/* --------------------------------------------------
+   7. Sticky Notes
+-------------------------------------------------- */
+.sticky-note {
+  background: #fffbe6;
+  transform: rotate(-1.5deg);
+  box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+  border: 1px solid #f5e6a7;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sticky-note:hover {
+  transform: rotate(0deg) scale(1.05);
+  box-shadow: 4px 6px 15px rgba(0,0,0,0.3);
+}
+
+/* --------------------------------------------------
+   8. Animations
+-------------------------------------------------- */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+.animate-wiggle {
+  animation: wiggle 0.6s ease-in-out infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin-slow 14s linear infinite;
+}
+
+@keyframes bounce-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.animate-bounce-slow {
+  animation: bounce-slow 3s infinite;
+}
+
+/* Doodle line animation */
+@keyframes dash {
+  to { stroke-dashoffset: -1000; }
+}
+.animate-doodle-line {
+  stroke-dasharray: 6 6;
+  animation: dash 8s linear infinite;
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(3deg); }
+  75% { transform: rotate(-3deg); }
+}
+
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin 6s linear infinite;
+}
