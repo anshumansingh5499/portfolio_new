@@ -1,5 +1,4 @@
-
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Lightbulb,
   Palette,
@@ -9,171 +8,234 @@ import {
   Rocket,
   TrendingUp,
 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 const steps = [
-  {
-    id: 1,
-    title: "Discovery & Planning",
-    description:
-      "Understand your goals, target audience, and create sitemap & scope.",
-    icon: <Lightbulb className="w-9 h-9 text-yellow-500" />,
-    bg: "bg-yellow-100",
-    rotate: "-3deg",
-  },
-  {
-    id: 2,
-    title: "Creative Design",
-    description:
-      "Wireframes, mood boards & visual identity to match your brand.",
-    icon: <Palette className="w-9 h-9 text-pink-500" />,
-    bg: "bg-pink-100",
-    rotate: "2deg",
-  },
-  {
-    id: 3,
-    title: "Development",
-    description:
-      "Bring designs to life with clean, scalable & responsive code.",
-    icon: <Code2 className="w-9 h-9 text-blue-500" />,
-    bg: "bg-blue-100",
-    rotate: "-2deg",
-  },
-  {
-    id: 4,
-    title: "Content Integration",
-    description:
-      "Add engaging content, images & videos aligned with the design.",
-    icon: <FileText className="w-9 h-9 text-green-500" />,
-    bg: "bg-green-100",
-    rotate: "1deg",
-  },
-  {
-    id: 5,
-    title: "Testing & QA",
-    description:
-      "Cross-browser & device testing to ensure smooth experience.",
-    icon: <Bug className="w-9 h-9 text-red-500" />,
-    bg: "bg-red-100",
-    rotate: "-1deg",
-  },
-  {
-    id: 6,
-    title: "Launch",
-    description: "Deploy & make your website live with best practices.",
-    icon: <Rocket className="w-9 h-9 text-purple-500" />,
-    bg: "bg-purple-100",
-    rotate: "3deg",
-  },
-  {
-    id: 7,
-    title: "Growth & Optimization",
-    description: "Analytics, SEO & improvements for long-term success.",
-    icon: <TrendingUp className="w-9 h-9 text-indigo-500" />,
-    bg: "bg-indigo-100",
-    rotate: "-2deg",
-  },
-];
-
-// Tape color pairs (alternating diagonals)
-const tapePairs = [
-  { top: "bg-yellow-200", bottom: "bg-pink-200" },
-  { top: "bg-blue-200", bottom: "bg-green-200" },
+  { title: "Discovery & planning", icon: Lightbulb, color: "#22c55e", description: "Align goals, audience, scope, and metrics." },
+  { title: "Design & UX", icon: Palette, color: "#a855f7", description: "Wireframes and visuals focused on clarity." },
+  { title: "Development", icon: Code2, color: "#3b82f6", description: "Build fast, scalable interfaces." },
+  { title: "Content integration", icon: FileText, color: "#eab308", description: "Structure content for product messaging." },
+  { title: "Testing & QA", icon: Bug, color: "#ef4444", description: "Cross-device testing and polish." },
+  { title: "Launch", icon: Rocket, color: "#22d3ee", description: "Deploy with performance and SEO." },
+  { title: "Iteration & growth", icon: TrendingUp, color: "#10b981", description: "Measure, learn, and improve continuously." },
 ];
 
 export const WebsiteApproach = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [showHint, setShowHint] = useState(true);
+
+  const CARD_WIDTH = 320;
+  const GAP = 32;
+  const STEP = CARD_WIDTH + GAP;
+
+  /* ===== Scroll sync ===== */
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    let ticking = false;
+
+    const onScroll = () => {
+      if (ticking) return;
+
+      window.requestAnimationFrame(() => {
+        const index = Math.round(el.scrollLeft / STEP);
+        setActive(Math.min(steps.length - 1, index));
+        setShowHint(false);
+        ticking = false;
+      });
+
+      ticking = true;
+    };
+
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* ===== Auto play (respects user) ===== */
+  useEffect(() => {
+    if (paused) return;
+
+    const id = setInterval(() => {
+      setActive((prev) => {
+        const next = (prev + 1) % steps.length;
+        containerRef.current?.scrollTo({
+          left: next * STEP,
+          behavior: "smooth",
+        });
+        return next;
+      });
+    }, 4200);
+
+    return () => clearInterval(id);
+  }, [paused]);
+
+  /* ===== Pause on tab switch ===== */
+  useEffect(() => {
+    const onVisibility = () => setPaused(document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
   return (
-    <section className="relative py-20 px-6 min-h-screen overflow-hidden">
-      {/* Paper Background */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none z-0"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <pattern
-            id="paper-grain"
-            width="0.5"
-            height="0.5"
-            patternUnits="userSpaceOnUse"
-          >
-            <rect width="0.5" height="0.5" fill="rgba(0,0,0,0.04)" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="#fffdf7" />
-        <rect width="100%" height="100%" fill="url(#paper-grain)" />
-        {Array.from({ length: 18 }).map((_, i) => (
-          <line
-            key={i}
-            x1="0"
-            x2="100"
-            y1={`${5 + i * 5}%`}
-            y2={`${5 + i * 5}%`}
-            stroke="rgba(0,0,0,0.05)"
-            strokeWidth="0.2"
-          />
-        ))}
-      </svg>
+    <section
+      id="Process"
+      className="relative bg-black py-36 border-t border-white/10 overflow-hidden"
+    >
+      {/* Grid */}
+      <div
+        className="absolute inset-0 opacity-[0.035]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }}
+      />
 
-      {/* Heading */}
-      <h2 className="text-5xl font-extrabold text-center mb-16 text-gray-900 font-handwriting relative z-10">
-        Our <span className="text-pink-500">Website Approach</span>
-      </h2>
+      {/* Glow */}
+      <motion.div
+        className="absolute top-[420px] left-0 w-[320px] h-[320px] rounded-full blur-[160px]"
+        animate={{
+          x: active * STEP + 40,
+          backgroundColor: steps[active].color,
+        }}
+        transition={{ type: "spring", stiffness: 60, damping: 30 }}
+        style={{ opacity: 0.22 }}
+      />
 
-      {/* Steps Grid */}
-      <div className="relative grid sm:grid-cols-2 lg:grid-cols-3 gap-20 max-w-7xl mx-auto z-10">
-        {steps.map((step, index) => {
-          const tapes = tapePairs[index % tapePairs.length]; // alternate
-          return (
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        {/* Header */}
+        <div className="max-w-3xl mb-20">
+          <span className="font-handwriting inline-flex rounded-full bg-white/5 px-4 py-1 text-sm text-emerald-400 mb-6">
+            Process
+          </span>
+          <h2 className="text-4xl md:text-5xl font-semibold text-white">
+            From idea to launch
+          </h2>
+          <p className="mt-6 text-lg text-white/60">
+            A structured SaaS workflow designed for clarity, scale, and long-term
+            maintainability.
+          </p>
+        </div>
+
+        {/* Progress */}
+        <div className="mb-8">
+          <div className="flex justify-between text-sm text-white/50 mb-2">
+            <span>
+              Step <span className="text-white">{active + 1}</span> / {steps.length}
+            </span>
+            <span>{Math.round(((active + 1) / steps.length) * 100)}%</span>
+          </div>
+
+          <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
             <motion.div
-              key={step.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.15 }}
-              viewport={{ once: true }}
-              className={`${step.bg} relative p-8 rounded-xl shadow-xl border-2 border-black font-handwriting`}
-              style={{ transform: `rotate(${step.rotate})` }}
-            >
-              {/* Two Diagonal Tape Strips */}
-              <span
-                className={`absolute -top-4 -left-3 w-20 h-5 ${tapes.top} rotate-[-12deg] opacity-80 shadow-md`}
-              ></span>
-              <span
-                className={`absolute -bottom-4 -right-3 w-20 h-5 ${tapes.bottom} rotate-[10deg] opacity-80 shadow-md`}
-              ></span>
+              className="h-full rounded-full"
+              animate={{
+                width: `${((active + 1) / steps.length) * 100}%`,
+                backgroundColor: steps[active].color,
+              }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+            />
+          </div>
+        </div>
 
-              {/* Icon */}
-              <div className="mb-5">{step.icon}</div>
+        {/* Carousel */}
+        <div
+          ref={containerRef}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          onTouchStart={() => setPaused(true)}
+          onTouchEnd={() => setPaused(false)}
+          className="flex gap-8 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-12 p-2"
+        >
+          {steps.map((step, i) => {
+            const Icon = step.icon;
+            const isActive = i === active;
 
-              {/* Title */}
-              <h3 className="text-2xl font-bold mb-3 text-gray-900">
-                {step.title}
-              </h3>
+            return (
+              <div key={i} className="snap-center shrink-0 w-[320px]">
+                {/* Dot */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() =>
+                      containerRef.current?.scrollTo({
+                        left: i * STEP,
+                        behavior: "smooth",
+                      })
+                    }
+                  >
+                    <div
+                      className="h-3 w-3 rounded-full transition"
+                      style={{
+                        backgroundColor: isActive ? step.color : "rgba(255,255,255,0.3)",
+                        boxShadow: isActive
+                          ? `0 0 0 6px ${step.color}33`
+                          : "none",
+                      }}
+                    />
+                  </button>
+                </div>
 
-              {/* Description */}
-              <p className="text-gray-700 text-base leading-relaxed">
-                {step.description}
-              </p>
-            </motion.div>
-          );
-        })}
+                {/* Card */}
+                <motion.div
+                  animate={{
+                    scale: isActive ? 1.06 : 1,
+                    borderColor: isActive ? step.color : "rgba(255,255,255,0.1)",
+                  }}
+                  transition={{ type: "spring", stiffness: 180, damping: 22 }}
+                  className="
+                    mt-8 rounded-2xl border
+                    bg-white/[0.03] backdrop-blur-xl
+                    p-7 shadow-[0_30px_80px_rgba(0,0,0,0.6)]
+                  "
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <div
+                      className="flex h-10 w-10 items-center justify-center rounded-xl"
+                      style={{
+                        backgroundColor: `${step.color}22`,
+                        color: step.color,
+                      }}
+                    >
+                      <Icon size={18} />
+                    </div>
+                    <span className="text-xs text-white/40">
+                      Step {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  <AnimatePresence mode="wait">
+                    <motion.h3
+                      key={step.title}
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ duration: 0.25 }}
+                      className={`font-medium mb-2 ${
+                        isActive ? "text-white" : "text-white/70"
+                      }`}
+                    >
+                      {step.title}
+                    </motion.h3>
+                  </AnimatePresence>
+
+                  <p className="text-sm text-white/60 leading-relaxed">
+                    {step.description}
+                  </p>
+                </motion.div>
+              </div>
+            );
+          })}
+        </div>
+
+        {showHint && (
+          <div className="md:hidden mt-6 text-center text-xs text-white/40">
+            Swipe to explore →
+          </div>
+        )}
       </div>
-
-      {/* Floating doodles */}
-      <motion.div
-        animate={{ y: [0, -15, 0] }}
-        transition={{ repeat: Infinity, duration: 4 }}
-        className="absolute top-16 left-8 text-4xl text-pink-400"
-      >
-        ✦
-      </motion.div>
-      <motion.div
-        animate={{ x: [0, 20, 0] }}
-        transition={{ repeat: Infinity, duration: 5 }}
-        className="absolute bottom-12 right-12 text-3xl text-blue-400"
-      >
-        ➶
-      </motion.div>
     </section>
   );
 };

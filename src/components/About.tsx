@@ -1,175 +1,157 @@
 import { motion } from "framer-motion";
+import {
+  SiReact,
+  SiTypescript,
+  SiTailwindcss,
+  SiFramer,
+  SiRedux,
+  SiOpenai,
+  SiPython,
+  SiLangchain,
+  SiHuggingface,
+  SiFastapi,
+  SiDocker,
+  SiN8N,
+} from "react-icons/si";
 
-const stickyColors = ["#FFEB99", "#FFB3B3", "#B3E5FC", "#C8E6C9"];
-const tapeColors = ["#FFD1DC", "#C8E6C9", "#B3E5FC", "#FFF176"]; // pastel washi-tape colors
-const rotations = ["-rotate-2", "rotate-2", "-rotate-1", "rotate-1"];
+const stack = [
+  { name: "React", icon: SiReact, color: "text-cyan-400" },
+  { name: "TypeScript", icon: SiTypescript, color: "text-blue-400" },
+  { name: "Tailwind CSS", icon: SiTailwindcss, color: "text-sky-400" },
+  { name: "Framer Motion", icon: SiFramer, color: "text-pink-400" },
+  { name: "Redux / Zustand", icon: SiRedux, color: "text-purple-400" },
 
-// Hand-drawn sketch animation variant
-const sketchVariant = {
-  hidden: { pathLength: 0, opacity: 0 },
-  visible: {
-    pathLength: 1,
-    opacity: 1,
-    transition: { duration: 2, ease: "easeInOut" },
-  },
-};
+  { name: "Python", icon: SiPython, color: "text-yellow-400" },
+  { name: "LangChain", icon: SiLangchain, color: "text-green-400" },
+  { name: "Hugging Face", icon: SiHuggingface, color: "text-orange-400" },
+  { name: "OpenAI API", icon: SiOpenai, color: "text-emerald-400" },
 
-// Floating doodle motion
-const floatAnim = {
-  y: [0, -10, 0],
-  transition: { repeat: Infinity, duration: 3, ease: "easeInOut" },
-};
+  { name: "FastAPI", icon: SiFastapi, color: "text-teal-400" },
+  { name: "Docker", icon: SiDocker, color: "text-blue-300" },
 
-// Tape piece component
-const Tape = ({ position, color }: { position: "top" | "bottom"; color: string }) => {
-  const baseClasses =
-    "absolute left-1/2 -translate-x-1/2 w-24 h-6 opacity-80 z-20";
-  const tornEdge = {
-    backgroundImage: `linear-gradient(135deg, ${color} 60%, transparent 60%),
-                     linear-gradient(-135deg, ${color} 60%, transparent 60%)`,
-    backgroundSize: "12px 12px",
-    backgroundRepeat: "repeat-x",
-  };
+  { name: "AI Agents", icon: SiOpenai, color: "text-indigo-400" },
+  { name: "RAG Systems", icon: SiOpenai, color: "text-cyan-300" },
+  { name: "Vector Databases", icon: SiOpenai, color: "text-violet-400" },
 
-  return (
-    <div
-      className={`${baseClasses} ${position === "top" ? "-top-4" : "-bottom-4"}`}
-      style={{
-        backgroundColor: color,
-        clipPath:
-          "polygon(0 0, 95% 0, 100% 20%, 100% 100%, 5% 100%, 0 80%)",
-        ...tornEdge,
-      }}
-    />
-  );
-};
+  { name: "AI Automation", icon: SiN8N, color: "text-orange-400" },
+];
 
 export const About = () => {
   return (
     <section
       id="about"
-      className="relative px-8 py-20 space-y-16 overflow-hidden min-h-screen bg-cr-200"
+      className="relative bg-black py-32 border-t border-white/10 overflow-hidden"
     >
-      {/* Background like sketchbook paper */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none z-0"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <defs>
-          <pattern
-            id="paper-grain"
-            width="0.5"
-            height="0.5"
-            patternUnits="userSpaceOnUse"
-          >
-            <rect width="0.5" height="0.5" fill="rgba(255,255,255,0.04)" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="#fffdf7" />
-        <rect width="100%" height="100%" fill="url(#paper-grain)" />
-        {Array.from({ length: 16 }).map((_, i) => (
-          <line
-            key={i}
-            x1="0"
-            x2="100"
-            y1={`${6 + i * 6}%`}
-            y2={`${6 + i * 6}%`}
-            stroke="rgba(0,0,0,0.05)"
-            strokeWidth="0.2"
-          />
-        ))}
-      </svg>
-
-      {/* Floating doodles */}
-      <motion.svg
-        viewBox="0 0 100 100"
-        className="absolute top-16 left-12 w-20 text-purple-500"
-        variants={sketchVariant}
-        initial="hidden"
-        animate="visible"
-      >
-        <motion.path
-          d="M10 50 Q50 10, 90 50 T 10 50"
-          stroke="currentColor"
-          strokeWidth="2"
-          fill="none"
-          variants={sketchVariant}
-        />
-      </motion.svg>
-
+      {/* Ambient glow */}
       <motion.div
-        className="absolute right-10 top-20 text-yellow-500 text-4xl"
-        animate={floatAnim}
-      >
-        ⭐
-      </motion.div>
+        aria-hidden
+        className="absolute -top-40 left-1/2 -translate-x-1/2 h-[520px] w-[520px] rounded-full bg-cyan-500/10 blur-[160px]"
+        animate={{ scale: [1, 1.15, 1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
 
-      <motion.div
-        className="absolute bottom-24 left-10 text-blue-500 text-4xl"
-        animate={floatAnim}
-      >
-        💡
-      </motion.div>
+      {/* Grid */}
+      <div
+        className="absolute inset-0 opacity-[0.035] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }}
+      />
 
-      {/* Heading */}
-      <h3 className="text-5xl font-extrabold text-center mb-12 font-handwriting relative z-10">
-        About <span className="text-pink-500 px-3 rounded-lg">Me</span>
-      </h3>
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        {/* ================= TERMINAL ================= */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="rounded-3xl border border-white/10 bg-[#0d0d0d] overflow-hidden shadow-[0_60px_160px_rgba(0,0,0,0.8)]"
+        >
+          {/* Terminal Header */}
+          <div className="flex items-center gap-2 px-4 py-3 bg-white/5 border-b border-white/10">
+            <span className="h-3 w-3 rounded-full bg-red-500" />
+            <span className="h-3 w-3 rounded-full bg-yellow-400" />
+            <span className="h-3 w-3 rounded-full bg-green-500" />
+            <span className="ml-4 text-xs text-white/50">
+              AI Runtime — about.sh
+            </span>
+          </div>
 
-      {/* Sticky Notes Grid */}
-      <div className="grid md:grid-cols-2 gap-12 items-start justify-center relative z-10">
-        {[
-          {
-            title: "Hello! I’m Anshuman",
-            content:
-              "I’m a passionate frontend developer & designer who loves turning ideas into beautiful, interactive web experiences. I specialize in React, Tailwind, and creating doodle-style UI designs.",
-          },
-          {
-            title: "What I Do",
-            content: (
-              <ul className="list-disc ml-5 space-y-2 text-gray-700 font-handwriting">
-                <li>Designing user-friendly web interfaces</li>
-                <li>Creating doodle & playful UI themes</li>
-                <li>Developing responsive React applications</li>
-                <li>Bringing ideas to life with modern frontend tech</li>
-              </ul>
-            ),
-          },
-          {
-            title: "My Philosophy",
-            content: (
-              <p className="italic">
-                “Design is not just what it looks like. Design is how it works.” – I
-                bring creativity and functionality together in every project.
-              </p>
-            ),
-          },
-          {
-            title: "Fun Fact",
-            content:
-              "I love combining doodle sketches with digital design to make interfaces more playful and engaging. My workspace? A virtual corkboard full of sticky notes and ideas!",
-          },
-        ].map((note, i) => (
-          <motion.div
-            key={i}
-            className={`sticky-note p-8 relative shadow-lg rounded-md ${rotations[i]}`}
-            style={{ backgroundColor: stickyColors[i] }}
-            whileHover={{ scale: 1.05, rotate: i % 2 === 0 ? -1 : 1 }}
-          >
-            {/* Top & bottom tape strips */}
-            <Tape position="top" color={tapeColors[i % tapeColors.length]} />
-            <Tape
-              position="bottom"
-              color={tapeColors[(i + 1) % tapeColors.length]}
-            />
+          {/* Terminal Body */}
+          <div className="p-6 md:p-8 font-mono text-sm text-white/80 space-y-6">
+            <TerminalLine command="whoami" />
 
-            <h4 className="text-2xl font-handwriting mb-4">{note.title}</h4>
-            <div className="text-gray-700 font-handwriting">{note.content}</div>
-          </motion.div>
-        ))}
+            <TerminalOutput>
+              Anshuman Singh — Frontend Engineer · Generative AI Developer
+            </TerminalOutput>
+
+            <TerminalLine command="cat about.txt" />
+
+            <TerminalOutput>
+              I build modern web applications and AI-powered systems that combine
+              frontend engineering with intelligent automation. My focus is on
+              creating scalable AI products using Python, LLM frameworks, and
+              modern web technologies.
+            </TerminalOutput>
+
+            <TerminalLine command="ls tech-stack/" />
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pl-4">
+              {stack.map(({ name, icon: Icon, color }) => (
+                <motion.div
+                  key={name}
+                  whileHover={{ y: -4 }}
+                  className="flex items-center gap-3 rounded-lg border border-white/10 bg-white/[0.03] px-4 py-3"
+                >
+                  <Icon className={`w-5 h-5 ${color}`} />
+                  <span className="text-xs text-white/80">{name}</span>
+                </motion.div>
+              ))}
+            </div>
+
+            <TerminalLine command="cat ai_focus.md" />
+
+            <TerminalOutput>
+              Building intelligent systems including LLM applications,
+              AI agents, retrieval-augmented generation (RAG) pipelines,
+              and automation tools that improve productivity and decision making.
+            </TerminalOutput>
+
+            <TerminalLine command="exit" />
+
+            <span className="text-emerald-400">✔ AI runtime completed</span>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
 };
+
+/* ================= TERMINAL COMPONENTS ================= */
+
+const TerminalLine = ({ command }: { command: string }) => (
+  <motion.div
+    initial={{ opacity: 0, x: -10 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.4 }}
+    className="flex gap-2"
+  >
+    <span className="text-emerald-400">$</span>
+    <span className="text-white">{command}</span>
+  </motion.div>
+);
+
+const TerminalOutput = ({ children }: { children: React.ReactNode }) => (
+  <motion.p
+    initial={{ opacity: 0 }}
+    whileInView={{ opacity: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.4 }}
+    className="pl-6 text-white/60 leading-relaxed"
+  >
+    {children}
+  </motion.p>
+);

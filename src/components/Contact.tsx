@@ -1,196 +1,151 @@
-
 import { Mail, MapPin, Linkedin, Github, Dribbble } from "lucide-react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-
-const stickyColors = ["#FFEB99", "#FFB3B3", "#B3E5FC", "#C8E6C9"];
-const rotations = ["-rotate-2", "rotate-2", "-rotate-1", "rotate-1"];
 
 export const Contact = () => {
   return (
     <section
-      id="contacts"
-      className="relative min-h-screen px-8 py-20 bg-cream overflow-hidden "
+      id="contact"
+      className="relative bg-black py-32 border-t border-white/10 overflow-hidden"
     >
-      
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none z-0"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-      >
-        <defs>
-          <pattern
-            id="paper-grain"
-            width="0.5"
-            height="0.5"
-            patternUnits="userSpaceOnUse"
-          >
-            <rect width="0.5" height="0.5" fill="rgba(0,0,0,0.02)" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="#fffdf7" />
-        <rect width="100%" height="100%" fill="url(#paper-grain)" />
-        {Array.from({ length: 16 }).map((_, i) => (
-          <line
-            key={i}
-            x1="0"
-            x2="100"
-            y1={`${6 + i * 6}%`}
-            y2={`${6 + i * 6}%`}
-            stroke="rgba(0,0,0,0.03)"
-            strokeWidth="0.2"
-          />
-        ))}
-      </svg>
+      {/* SaaS grid background */}
+      <div
+        className="absolute inset-0 opacity-[0.035] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }}
+      />
 
-      {/* Section Heading */}
-      <h3 className="text-5xl font-extrabold text-center mt-30 mb-10 font-handwriting relative">
-        Let’s <span className="text-pink-500 px-3 rounded-lg">Connect</span>
-      </h3>
+      {/* Gradient accent */}
+      <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[700px] h-[700px] rounded-full bg-black/30 blur-[160px]" />
 
-      <div className="grid md:grid-cols-2 gap-12 items-start justify-center relative z-10">
-        {/* Contact Form Sticky Note */}
-        <div
-          className={`relative p-10 sticky-note ${rotations[0]} shadow-lg`}
-          style={{ backgroundColor: stickyColors[0] }}
+      <div className="relative z-10 max-w-6xl mx-auto px-6">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mb-24"
         >
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-red-500 rounded-full shadow-md border border-black/30"></div>
+          <span className="inline-flex rounded-full bg-white/5 px-4 py-1 text-sm text-green-500 mb-6 font-handwriting">
+            Contact
+          </span>
 
-          <form className="space-y-5">
+          <h2 className="text-4xl md:text-5xl font-semibold text-white tracking-tight">
+            Let’s build something
+            <br />
+            meaningful together
+          </h2>
+
+          <p className="mt-6 text-lg text-white/60">
+            Have a project, idea, or opportunity in mind?  
+            I’m open to collaborations, freelance work, and full-time roles.
+          </p>
+        </motion.div>
+
+        {/* Main layout */}
+        <div className="grid md:grid-cols-2 gap-16">
+          {/* Contact form */}
+          <motion.form
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="rounded-2xl border border-white/10 bg-neutral-900 p-8"
+          >
             <div className="grid sm:grid-cols-2 gap-5">
               <input
-                className="border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition"
-                placeholder="Your Name"
+                className="rounded-lg bg-black border border-white/10 px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                placeholder="Your name"
               />
               <input
-                className="border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-sky-500 outline-none transition"
-                placeholder="Your Email"
+                className="rounded-lg bg-black border border-white/10 px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                placeholder="Email address"
                 type="email"
               />
               <input
-                className="border border-gray-300 rounded-xl px-4 py-3 sm:col-span-2 focus:ring-2 focus:ring-sky-500 outline-none transition"
+                className="sm:col-span-2 rounded-lg bg-black border border-white/10 px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-pink-500"
                 placeholder="Subject"
               />
               <textarea
-                className="border border-gray-300 rounded-xl px-4 py-3 sm:col-span-2 focus:ring-2 focus:ring-sky-500 outline-none transition"
                 rows={5}
-                placeholder="Message"
+                className="sm:col-span-2 rounded-lg bg-black border border-white/10 px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-pink-500"
+                placeholder="Tell me about your project…"
               />
             </div>
-            <button className="mt-8 w-full px-8 py-4 rounded-xl bg-pink-400 text-white font-semibold text-lg shadow-md hover:bg-pink-500 hover:shadow-lg transition-all">
-              Send Message
+
+            <button
+              type="submit"
+              className="mt-8 inline-flex items-center justify-center w-full rounded-lg bg-gradient-to-r from-green-500 to-green-500 px-6 py-3 text-white font-medium hover:opacity-90 transition"
+            >
+              Send message
             </button>
-          </form>
+          </motion.form>
 
-          {/* Small Doodle Accents */}
-          <svg
-            className="absolute -bottom-6 -right-6 w-24 h-24 opacity-50"
-            viewBox="0 0 80 80"
+          {/* Contact info card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="rounded-2xl border border-white/10 bg-neutral-900 p-8 flex flex-col justify-between"
           >
-            <path
-              d="M2 20 Q20 2, 38 20 T 74 18"
-              stroke="#f59e0b"
-              strokeWidth="1.5"
-              fill="none"
-            />
-          </svg>
-          <svg
-            className="absolute -top-6 -left-6 w-20 h-20 opacity-40"
-            viewBox="0 0 80 80"
-          >
-            <path
-              d="M2 30 Q20 10, 38 30 T 74 28"
-              stroke="#f97316"
-              strokeWidth="1.5"
-              fill="none"
-            />
-          </svg>
-        </div>
+            <div>
+              <h3 className="text-lg font-medium text-white mb-6">
+                Get in touch
+              </h3>
 
-        {/* Contact Info Sticky Note */}
-        <div
-          className={`relative p-10 sticky-note ${rotations[1]} shadow-lg`}
-          style={{ backgroundColor: stickyColors[1] }}
-        >
-          <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-5 h-5 bg-red-500 rounded-full shadow-md border border-black/30"></div>
+              <div className="space-y-4 text-white/70">
+                <div className="flex items-center gap-3">
+                  <Mail className="w-5 h-5 text-green-400" />
+                  <span>anshumansingh10701@gmail.com</span>
+                </div>
 
-          <h4 className="text-2xl font-semibold mb-8 font-handwriting">
-            Contact Info
-          </h4>
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5 text-green-400" />
+                  <span>India</span>
+                </div>
+              </div>
+            </div>
 
-          <div className="flex items-center gap-4 mb-5">
-            <Mail className="text-sky-600 w-6 h-6" />
-            <p className="text-gray-700 font-handwriting">
-              anshumansingh10701@gmail.com
-            </p>
-          </div>
-          <div className="flex items-center gap-4 mb-10">
-            <MapPin className="text-sky-600 w-6 h-6" />
-            <p className="text-gray-700 font-handwriting">India</p>
-          </div>
+            {/* Socials */}
+            <div className="mt-10">
+              <p className="text-xs uppercase tracking-wide text-white/40 mb-4">
+                Social
+              </p>
 
-          <h5 className="text-lg font-medium mb-4 font-handwriting">
-            Social Links
-          </h5>
-          <div className="flex gap-5">
-            <Link
-              to="https://www.linkedin.com/in/anshuman-singh7/"
-              className="w-11 h-11 flex items-center justify-center rounded-full bg-sky-100 text-sky-600 hover:bg-sky-600 hover:text-white transition"
-            >
-              <Linkedin className="w-5 h-5" />
-            </Link>
-            <Link
-              to="https://github.com/tanujgrover9"
-              className="w-11 h-11 flex items-center justify-center rounded-full bg-slate-100 text-slate-700 hover:bg-slate-800 hover:text-white transition"
-            >
-              <Github className="w-5 h-5" />
-            </Link>
-            <Link
-              to="https://dribbble.com/"
-              className="w-11 h-11 flex items-center justify-center rounded-full bg-pink-100 text-pink-500 hover:bg-pink-500 hover:text-white transition"
-            >
-              <Dribbble className="w-5 h-5" />
-            </Link>
-          </div>
-
-          {/* Doodle Accents */}
-          <svg
-            className="absolute -bottom-6 -left-6 w-20 h-20 opacity-40"
-            viewBox="0 0 80 80"
-          >
-            <path
-              d="M2 20 Q20 2, 38 20 T 74 18"
-              stroke="#60a5fa"
-              strokeWidth="1.5"
-              fill="none"
-            />
-          </svg>
-          <svg
-            className="absolute -top-6 -right-6 w-24 h-24 opacity-50"
-            viewBox="0 0 80 80"
-          >
-            <path
-              d="M2 30 Q20 10, 38 30 T 74 28"
-              stroke="#7c3aed"
-              strokeWidth="1.5"
-              fill="none"
-            />
-          </svg>
+              <div className="flex gap-4">
+                <a
+                  href="https://www.linkedin.com/in/anshuman-singh7/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="h-10 w-10 flex items-center justify-center rounded-full border border-white/10 text-white/70 hover:bg-white/10 hover:text-white transition"
+                >
+                  <Linkedin size={18} />
+                </a>
+                <a
+                  href="https://github.com/tanujgrover9"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="h-10 w-10 flex items-center justify-center rounded-full border border-white/10 text-white/70 hover:bg-white/10 hover:text-white transition"
+                >
+                  <Github size={18} />
+                </a>
+                <a
+                  href="https://dribbble.com/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="h-10 w-10 flex items-center justify-center rounded-full border border-white/10 text-white/70 hover:bg-white/10 hover:text-white transition"
+                >
+                  <Dribbble size={18} />
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
-
-      {/* Floating Doodle Icons */}
-     <div className="absolute inset-0 pointer-events-none">
-  <motion.div
-    className="absolute top-10 left-10 flex flex-col gap-3"
-    animate={{ y: [0, -15, 0] }}
-    transition={{ repeat: Infinity, duration: 4 }}
-  >
-    <Mail className="w-7 h-7 text-sky-500" />
-    <MapPin className="w-7 h-7 text-pink-500" />
-    <Github className="w-7 h-7 text-gray-800" />
-  </motion.div>
-</div>
     </section>
   );
 };

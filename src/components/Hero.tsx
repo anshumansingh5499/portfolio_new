@@ -1,354 +1,272 @@
-import  { useEffect, useState } from "react";
-import { motion, useMotionValue, useTransform } from "framer-motion";
-
+import { useEffect, useState } from "react";
 import {
-  FaPenNib,
-  FaCode,
- 
-  FaReact,
+  motion,
+  useMotionValue,
+  useMotionTemplate,
+  useSpring,
+} from "framer-motion";
+import { FaGithub, FaLinkedin, FaReact } from "react-icons/fa";
+import { SiOpenai } from "react-icons/si";
 
-  FaJsSquare,
- 
-} from "react-icons/fa";
-import { BsEye } from "react-icons/bs";
-
-
-
-export default function Hero() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  // Mouse tracking for parallax
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const rotateX = useTransform(mouseY, [0, window.innerHeight], [10, -10]);
-  const rotateY = useTransform(mouseX, [0, window.innerWidth], [-10, 10]);
-
-  // Mouse trail positions
-  const [trail, setTrail] = useState<{ x: number; y: number }[]>([]);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
-
-      // Push new point to trail
-      setTrail((prev) => {
-        const updated = [...prev, { x: e.clientX, y: e.clientY }];
-        return updated.slice(-26); // keep last ~26 points
-      });
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
-
-  // Build doodle stroke path from trail points (scaled to container) — fall back to empty
-  const pathD = trail.length > 1 ? `M ${trail.map((p) => `${p.x},${p.y}`).join(" L ")}` : "";
-
-
+/* ================= MAGNETIC BUTTON ================= */
+function MagneticButton({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
 
   return (
-    <div className="min-h-screen px-6 md:px-20 py-12 relative overflow-hidden font-sans bg-cream">
-      {/* Sketchbook paper background (subtle) */}
-      <svg
-        className="absolute inset-0 w-full h-full pointer-events-none z-0"
-        viewBox="0 0 100 100"
-        preserveAspectRatio="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* faint paper grain + horizontal notebook lines */}
-        <defs>
-          <pattern id="paper-grain" width="0.5" height="0.5" patternUnits="userSpaceOnUse">
-            <rect width="0.5" height="0.5" fill="rgba(255,255,255,0.02)" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="#fffdf7" />
-        <rect width="100%" height="100%" fill="url(#paper-grain)" />
-
-        {/* notebook faint lines */}
-        {Array.from({ length: 16 }).map((_, i) => (
-          <line
-            key={i}
-            x1="0"
-            x2="100"
-            y1={`${6 + i * 6}%`}
-            y2={`${6 + i * 6}%`}
-            stroke="rgba(0,0,0,0.03)"
-            strokeWidth="0.2"
-          />
-        ))}
-      </svg>
-
-      {/* Floating doodles & icons (stack) */}
-      <div className="absolute z-10 inset-0 pointer-events-none">
-        {/* floating stack cluster (grouped icons) */}
-        <motion.div
-          className="absolute top-24 left-8 z-20 flex flex-col gap-2 items-center"
-          style={{ rotateX, rotateY }}
-          animate={{ y: [0, -12, 0] }}
-          transition={{ repeat: Infinity, duration: 4 }}
-        >
-          <div className="p-2 bg-white/80 rounded-xl shadow-md border border-dashed border-gray-200 backdrop-blur-sm">
-            <FaReact size={34} className="text-blue-600" />
-          </div>
-          <div className="p-2 bg-white/80 rounded-xl shadow-md border border-dashed border-gray-200">
-            <FaJsSquare size={30} className="text-yellow-600" />
-          </div>
-        </motion.div>
-
-        {/* doodle arrows (example) */}
-        <motion.svg
-          viewBox="0 0 100 30"
-          className="absolute right-6 top-36 w-36 opacity-90"
-          initial={{ x: 20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.9 }}
-        >
-          <path d="M2 20 Q40 0, 98 20" fill="none" stroke="#ff7ab6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M92 17 L98 20 L92 23" fill="#ff7ab6" />
-        </motion.svg>
-      </div>
-
-      {/* Mouse Trail Doodle Layer */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
-        <motion.path
-          d={pathD}
-          stroke="#2b2b2b"
-          strokeWidth="2"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          initial={{ pathLength: 0, opacity: 0 }}
-          animate={{ pathLength: 1, opacity: [0.9, 0.3, 0.0] }}
-          transition={{ duration: 0.6 }}
-        />
-      </svg>
-
-      {/* Header */}
-      <motion.header
-  initial={{ y: -40, opacity: 0 }}
-  animate={{ y: 0, opacity: 1 }}
-  transition={{ duration: 0.6 }}
-  className="flex justify-between items-center mb-8 relative z-30"
->
-  {/* Left: Name */}
-  <div className="flex items-center gap-3 relative">
-  {/* Doodle User Icon */}
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 64 64"
-    className="w-10 h-10 text-gray-800"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <path d="M32 32c8 0 14-6 14-14s-6-14-14-14-14 6-14 14 6 14 14 14z" />
-    <path d="M8 60c0-8 12-14 24-14s24 6 24 14" />
-  </svg>
-
-  <span className="font-semibold text-lg relative font-handwriting">
-    Anshuman Singh
-    {/* Sketch underline */}
-    <svg
-      className="absolute left-0 bottom-[-6px] w-full h-3 text-pink-400"
-      viewBox="0 0 100 10"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
+    <motion.button
+      onMouseMove={(e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        x.set((e.clientX - rect.left - rect.width / 2) * 0.35);
+        y.set((e.clientY - rect.top - rect.height / 2) * 0.35);
+      }}
+      onMouseLeave={() => {
+        x.set(0);
+        y.set(0);
+      }}
+      style={{ x, y }}
+      transition={{ type: "spring", stiffness: 250, damping: 18 }}
+      className={className}
     >
-      <path d="M2 6 Q10 2, 20 6 T 40 4 T 60 7 T 80 5 T 100 6" />
-    </svg>
-  </span>
-</div>
-
-
-  {/* Right: Navigation */}
-  <div className="flex items-center gap-4">
-    {/* Desktop Menu */}
-    <nav className="hidden md:flex items-center gap-6 text-gray-800">
-      <a href="#home" className="hover:underline font-handwriting">
-        Home
-      </a>
-      <a href="#about" className="hover:underline font-handwriting">
-        About Us
-      </a>
-      <a href="#projects" className="hover:underline font-handwriting">
-        Projects
-      </a>
-      <a href="#contacts" className="hover:underline font-handwriting">
-        Contact
-      </a>
-    </nav>
-
-    {/* Download CV – Always visible */}
-    <a
-      href="https://drive.google.com/file/d/1fvxwJD3-C-J0p6nBcLPvdLS7ZsRIp2g7/view?usp=sharing"
-      download="Anshuman_Singh_CV.pdf"
-      className="px-3 py-2 rounded-full border border-gray-300 hover:bg-gray-50 font-medium font-handwriting"
-    >
-      Download CV
-    </a>
-
-    {/* Hamburger menu - visible on mobile */}
-    <div className="md:hidden relative">
-      <button
-        onClick={() => setMenuOpen(!menuOpen)}
-        className="p-2 border rounded-md"
-      >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M4 6h16M4 12h16M4 18h16"
-          />
-        </svg>
-      </button>
-
-      {/* Mobile Dropdown */}
-      {menuOpen && (
-        <div className="absolute right-0 mt-2 bg-white shadow-lg rounded-lg p-4 flex flex-col gap-3 text-gray-800 z-50">
-          <a href="#home" className="hover:underline font-handwriting">
-            Home
-          </a>
-          <a href="#about" className="hover:underline font-handwriting">
-            About Us
-          </a>
-          <a href="#projects" className="hover:underline font-handwriting">
-            Projects
-          </a>
-          <a href="#contacts" className="hover:underline font-handwriting">
-            Contact
-          </a>
-        </div>
-      )}
-    </div>
-  </div>
-</motion.header>
-
-
-      {/* Hero Section */}
-      <section id="home" className="relative w-full flex flex-col items-center px-6 z-20">
-        <motion.div
-          initial={{ y: 40, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="relative max-w-4xl text-center"
-        >
-          <h1 className="text-6xl md:text-7xl font-extrabold leading-tight text-black">
-            I <span className="text-pink-500 relative font-handwriting">design
-              <svg
-                className="absolute left-0 bottom-[-8px] w-full h-4 text-pink-400"
-                viewBox="0 0 100 10"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M2 6 Q15 2, 30 6 T 50 5 T 70 7 T 90 6 T 100 5" />
-              </svg>
-            </span>
-            <br /> beautiful, usable websites
-          </h1>
-
-          <p className="font-handwriting mt-6 text-lg md:text-xl text-gray-700 mx-auto max-w-2xl">
-            I’ll design your website and develop it to launch on the internet using modern tools — no-code & code friendly.
-          </p>
-
-          {/* Animated Email button with doodle arrow */}
-          <motion.div whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.98 }} className="mt-8 flex justify-center items-center gap-4">
-            <a
-  href="mailto:anshumansingh10701@gmail.com?subject=Hiring%20Inquiry&body=Hi%20Anshuman,"
-  className="group flex items-center gap-4 px-6 py-3 bg-black text-white font-medium rounded-full shadow-lg transition relative font-handwriting"
->
-  Email Me
-  <svg
-    className="w-6 h-6 transform group-hover:translate-x-1 transition"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-  >
-    <path d="M5 12h14" strokeWidth="1.6" strokeLinecap="round" />
-    <path d="M12 5l7 7-7 7" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-</a>
-
-
-            {/* Doodle arrow pointing to contact section */}
-            <a href="#contact" className="inline-flex items-center gap-2 text-sm text-gray-600 hover:underline">
-              <svg className="w-20 h-10" viewBox="0 0 100 40" fill="none">
-                <path d="M2 30 Q40 2, 98 30" stroke="#7c3aed" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-                <path d="M92 27 L98 30 L92 33" fill="#7c3aed" />
-              </svg>
-              See contact
-            </a>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* What I do section (keeps original cards but adds small doodles) */}
-      <section id="about" className="mt-16 relative z-20">
-        <p className="italic text-pink-600 font-handwriting text-xl">What I do?</p>
-
-        <div className="flex flex-wrap gap-6 mt-10">
-          {/* Card 1 */}
-          <motion.div whileHover={{ rotate: -2, scale: 1.05 }} style={{ rotateX, rotateY }} className="relative w-64 h-72 bg-yellow-300 rounded-xl shadow-lg p-6 transform rotate-[-3deg]">
-            <span className="absolute -top-3 left-4 bg-blue-200 text-blue-800 font-handwriting text-sm px-2 py-1 rounded-sm shadow rotate-[-5deg]">Pen/Paper</span>
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <FaPenNib size={40} className="mb-4" />
-              <h3 className="font-bold text-lg font-handwriting">User Research <br /> Design</h3>
-            </div>
-            {/* small doodle inside card */}
-            <svg className="absolute -right-6 -top-6 w-24 h-24 opacity-80" viewBox="0 0 80 80">
-              <path d="M2 20 Q20 2, 38 20 T 74 18" stroke="#f59e0b" strokeWidth="1.6" fill="none" />
-            </svg>
-          </motion.div>
-
-          {/* Card 2 */}
-          <motion.div whileHover={{ rotate: 1, scale: 1.05 }} style={{ rotateX, rotateY }} className="relative w-64 h-72 bg-blue-300 rounded-xl shadow-lg p-6 transform rotate-[2deg]">
-            <span className="absolute -top-3 right-4 bg-pink-200 text-pink-800 font-handwriting text-sm px-2 py-1 rounded-sm shadow rotate-[5deg]">Figma</span>
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <BsEye size={40} className="mb-4" />
-              <h3 className="font-bold text-lg font-handwriting">UI & Product <br /> Design</h3>
-            </div>
-            <svg className="absolute -left-6 -top-6 w-24 h-24 opacity-80" viewBox="0 0 80 80">
-              <path d="M2 20 Q20 2, 38 20 T 74 18" stroke="#60a5fa" strokeWidth="1.6" fill="none" />
-            </svg>
-          </motion.div>
-
-          {/* Card 3 */}
-          <motion.div whileHover={{ rotate: -1, scale: 1.05 }} style={{ rotateX, rotateY }} className="relative w-64 h-72 bg-blue-400 rounded-xl shadow-lg p-6 transform rotate-[-2deg]">
-            <span className="absolute -top-3 right-6 bg-yellow-200 text-yellow-800 font-handwriting text-sm px-2 py-1 rounded-sm shadow rotate-[-6deg]">Webflow</span>
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <FaCode size={40} className="mb-4" />
-              <h3 className="font-bold text-lg font-handwriting">No-code <br /> Development</h3>
-            </div>
-            <svg className="absolute -right-6 bottom-[-6px] w-24 h-24 opacity-80" viewBox="0 0 80 80">
-              <path d="M2 20 Q20 2, 38 20 T 74 18" stroke="#f97316" strokeWidth="1.6" fill="none" />
-            </svg>
-          </motion.div>
-
-          {/* Card 4 — same content, slight doodle */}
-          <motion.div whileHover={{ rotate: 1, scale: 1.05 }} style={{ rotateX, rotateY }} className="relative w-60 h-72 bg-green-300 rounded-xl shadow-lg p-6 transform rotate-[1deg]">
-            <span className="absolute -top-3 left-6 bg-white text-green-800 font-handwriting text-sm px-2 py-1 rounded-sm shadow rotate-[-4deg]">Best Practices</span>
-            <div className="flex flex-col items-center justify-center h-full text-center">
-              <FaCode size={44} className="mb-4" />
-              <h3 className="font-bold text-lg font-handwriting">Write clean, <br /> maintainable & <br /> efficient code</h3>
-            </div>
-            <svg className="absolute left-0 bottom-[-6px] w-20 h-20 opacity-80" viewBox="0 0 80 80">
-              <path d="M2 20 Q20 2, 38 20" stroke="#10b981" strokeWidth="1.6" fill="none" />
-            </svg>
-          </motion.div>
-        </div>
-      </section>
-
-    
-    </div>
+      {children}
+    </motion.button>
   );
 }
 
+/* ================= HERO ================= */
+export default function Hero() {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const smoothX = useSpring(mouseX, { stiffness: 120, damping: 30 });
+  const smoothY = useSpring(mouseY, { stiffness: 120, damping: 30 });
 
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+    };
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
+  }, []);
+
+  const glow = useMotionTemplate`
+    radial-gradient(420px at ${smoothX}px ${smoothY}px,
+      rgba(56,189,248,0.10),
+      transparent 70%)
+  `;
+
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const tiltX = useSpring(rotateX, { stiffness: 120, damping: 20 });
+  const tiltY = useSpring(rotateY, { stiffness: 120, damping: 20 });
+
+  const handleEditorMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    rotateX.set(-(y / rect.height - 0.5) * 8);
+    rotateY.set((x / rect.width - 0.5) * 8);
+  };
+
+  const resetTilt = () => {
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
+  const codeLines = [
+    <>
+      <span className="text-[#c792ea]">export default function</span>{" "}
+      <span className="text-[#82aaff]">Developer</span>() {"{"}
+    </>,
+    <>
+      {"  "}
+      <span className="text-[#c792ea]">return</span> (
+    </>,
+    <>
+      {"    "}
+      <span className="text-[#89ddff]">&lt;section</span>{" "}
+      <span className="text-[#82aaff]">className</span>
+      <span className="text-[#89ddff]">=</span>
+      <span className="text-[#ecc48d]">"ai-portfolio"</span>
+      <span className="text-[#89ddff]">&gt;</span>
+    </>,
+    <>
+      {"      "}
+      <span className="text-[#89ddff]">&lt;h1&gt;</span>
+      I'm Anshuman Singh
+      <span className="text-[#89ddff]">&lt;/h1&gt;</span>
+    </>,
+    <>
+      {"      "}
+      <span className="text-[#89ddff]">&lt;h2&gt;</span>
+      Frontend Engineer · Generative AI Developer
+      <span className="text-[#89ddff]">&lt;/h2&gt;</span>
+    </>,
+    <>
+      {"      "}
+      <span className="text-[#89ddff]">&lt;p&gt;</span>
+      Building AI powered applications with Python and LLMs
+      <span className="text-[#89ddff]">&lt;/p&gt;</span>
+    </>,
+    <>
+      {"      "}
+      <span className="text-[#89ddff]">&lt;p&gt;</span>
+      React · Next.js · LangChain · HuggingFace
+      <span className="text-[#89ddff]">&lt;/p&gt;</span>
+    </>,
+    <>
+      {"      "}
+      <span className="text-[#89ddff]">&lt;p&gt;</span>
+      AI Agents · RAG Systems · Automation
+      <span className="text-[#89ddff]">&lt;/p&gt;</span>
+    </>,
+    <>
+      {"    "}
+      <span className="text-[#89ddff]">&lt;/section&gt;</span>
+    </>,
+    <>{"  "} );</>,
+    <>{"}"} </>,
+  ];
+
+  const [visibleLines, setVisibleLines] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setVisibleLines((v) => (v < codeLines.length ? v + 1 : v));
+    }, 120);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-black px-8 py-28 mt-[-60px]">
+      <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-[#060606]" />
+      <motion.div className="absolute inset-0" style={{ background: glow }} />
+
+      <div
+        className="absolute inset-0 opacity-[0.06]"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "90px 90px",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto max-w-7xl flex flex-col items-center text-center gap-14">
+        {/* Headline */}
+        <h1 className="text-[clamp(2.7rem,5vw,5.2rem)] leading-[1.05] font-semibold bg-gradient-to-b from-white to-white/60 bg-clip-text text-transparent">
+          Building intelligent
+          <br />
+          <span className="bg-white bg-clip-text text-transparent font-handwriting">
+            AI-powered products
+          </span>
+        </h1>
+
+        {/* Role pill */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex items-center gap-3 rounded-full border border-white/15 bg-white/5 backdrop-blur-xl px-5 py-2.5 shadow-[0_0_60px_rgba(34,197,94,0.18)]"
+        >
+          <span className="text-sm font-medium text-white/80">
+            Frontend Engineer · Generative AI Developer
+          </span>
+
+          <span className="h-4 w-px bg-white/20" />
+
+          <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-0.5 text-xs font-semibold text-emerald-400 ring-1 ring-emerald-400/30">
+            Open to work
+          </span>
+        </motion.div>
+
+        {/* Editor */}
+        <MagneticButton className="relative w-full flex justify-center">
+          <motion.div
+            onMouseMove={handleEditorMove}
+            onMouseLeave={resetTilt}
+            style={{ rotateX: tiltX, rotateY: tiltY }}
+            className="w-full max-w-6xl rounded-2xl border border-white/10 bg-[#0b0b0c]/80 backdrop-blur-xl shadow-[0_80px_220px_rgba(0,0,0,0.85)] overflow-hidden"
+          >
+            <div className="flex items-center gap-2 px-4 py-3 bg-white/5 border-b border-white/10">
+              <span className="h-3 w-3 rounded-full bg-red-500" />
+              <span className="h-3 w-3 rounded-full bg-yellow-400" />
+              <span className="h-3 w-3 rounded-full bg-green-500" />
+              <span className="ml-3 text-xs text-white/40">
+                ai-portfolio.tsx
+              </span>
+            </div>
+
+            <pre className="p-6 text-sm font-mono leading-relaxed whitespace-pre-wrap text-[#e5e7eb] max-h-[340px] overflow-hidden">
+              <code>
+                {codeLines.slice(0, visibleLines).map((line, i) => (
+                  <div key={i}>{line}</div>
+                ))}
+                <span className="animate-pulse text-white/40">▍</span>
+              </code>
+            </pre>
+
+            <div className="flex items-center justify-between px-6 py-3 border-t border-white/10 bg-black/40">
+              <span className="text-xs text-white/40 font-mono">
+                AI Runtime · portfolio
+              </span>
+
+              <div className="flex gap-3">
+                <a href="#projects">
+                  <MagneticButton className="rounded-md bg-emerald-500/90 px-4 py-1.5 text-xs font-mono text-black shadow-lg">
+                    ▶ View Projects
+                  </MagneticButton>
+                </a>
+
+                <a href="https://drive.google.com/file/d/1fvxwJD3-C-J0p6nBcLPvdLS7ZsRIp2g7/view">
+                  <MagneticButton className="rounded-md border border-white/20 px-4 py-1.5 text-xs font-mono text-white hover:bg-white/5">
+                    ⬇ Download CV
+                  </MagneticButton>
+                </a>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Floating badges */}
+          <motion.div
+            animate={{ y: [0, 12, 0] }}
+            transition={{ duration: 6, repeat: Infinity }}
+            className="absolute right-6 top-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md px-4 py-2 text-sm text-white/60 flex items-center gap-2"
+          >
+            <SiOpenai /> LLM Apps
+          </motion.div>
+
+          <motion.div
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 7, repeat: Infinity }}
+            className="absolute left-6 bottom-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md px-4 py-2 text-sm text-white/60 flex items-center gap-2"
+          >
+            <FaReact /> AI Interfaces
+          </motion.div>
+        </MagneticButton>
+      </div>
+
+      {/* Social */}
+      <div className="fixed right-6 bottom-10 z-50 flex flex-col gap-4 text-white/50">
+        <a
+          href="https://www.linkedin.com/in/anshuman-singh7/"
+          className="hover:text-white"
+        >
+          <FaLinkedin />
+        </a>
+        <a
+          href="https://github.com/tanujgrover9"
+          className="hover:text-white"
+        >
+          <FaGithub />
+        </a>
+      </div>
+    </section>
+  );
+}

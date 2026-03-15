@@ -1,127 +1,224 @@
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { projects } from "../data/projects";
-
-const tapeColors = [
-  "bg-yellow-300",
-  "bg-pink-300",
-  "bg-blue-300",
-  "bg-green-300",
-];
-
-const cardColors = [
-  "bg-pink-200",
-  "bg-yellow-200",
-  "bg-blue-200",
-  "bg-green-200",
-  "bg-purple-200",
-  "bg-orange-200",
-];
+import { useRef, useState, useEffect } from "react";
 
 export const Projects = () => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const CARD_WIDTH = 420;
+  const GAP = 64;
+  const STEP = CARD_WIDTH + GAP;
+
+  /* ===== Stable active detection ===== */
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    let ticking = false;
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const index = Math.floor((el.scrollLeft + STEP / 2) / STEP);
+          setActive(Math.max(0, Math.min(projects.length - 1, index)));
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  /* ===== Auto-play (no conflict) ===== */
+  useEffect(() => {
+    if (paused) return;
+
+    const id = setInterval(() => {
+      const next = (active + 1) % projects.length;
+      containerRef.current?.scrollTo({
+        left: next * STEP,
+        behavior: "smooth",
+      });
+    }, 4500);
+
+    return () => clearInterval(id);
+  }, [active, paused]);
+
+  /* ===== Pause on tab blur ===== */
+  useEffect(() => {
+    const onVisibility = () => setPaused(document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () =>
+      document.removeEventListener("visibilitychange", onVisibility);
+  }, []);
+
+  const scrollToIndex = (i: number) => {
+    containerRef.current?.scrollTo({
+      left: i * STEP,
+      behavior: "smooth",
+    });
+  };
+
+  const accent = projects[active].accentColor;
+
   return (
     <section
       id="projects"
-      className="relative min-h-screen px-6 md:px-20 py-16 bg-[#fffdf6] overflow-hidden font-sans"
+      className="relative bg-black py-32 border-t border-white/10 overflow-hidden"
     >
-      {/* Paper texture */}
-      <div className="absolute inset-0 bg-[radial-gradient(#00000010_1px,transparent_1px)] [background-size:14px_14px] opacity-40" />
+      {/* Grid */}
+      <div
+        className="absolute inset-0 opacity-[0.035] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, #fff 1px, transparent 1px), linear-gradient(to bottom, #fff 1px, transparent 1px)",
+          backgroundSize: "64px 64px",
+        }}
+      />
 
-      {/* Floating doodles */}
-      <span className="absolute top-10 left-10 text-pink-400 text-3xl animate-bounce">★</span>
-      <span className="absolute top-24 right-16 text-blue-400 text-2xl animate-pulse">➶</span>
-      <span className="absolute bottom-20 left-1/4 text-green-500 text-xl animate-spin-slow">〰</span>
-      <span className="absolute bottom-1/3 right-10 text-yellow-500 text-4xl animate-wiggle">✦</span>
+      {/* Accent glow */}
+      <motion.div
+        key={active}
+        className="absolute inset-0 pointer-events-none"
+        animate={{ opacity: 0.6 }}
+        transition={{ duration: 0.6 }}
+        style={{
+          background: `radial-gradient(600px at 50% 40%, ${accent}33, transparent 70%)`,
+        }}
+      />
 
-      {/* Heading */}
-      <div className="relative z-10 text-center mb-16">
-        <p className="font-handwriting text-pink-600 text-xl">
-          Things I’ve Built
-        </p>
-        <h2 className="mt-4 text-5xl font-extrabold font-handwriting text-gray-900">
-          My{" "}
-          <span className="relative inline-block bg-pink-300 px-3 rounded-md">
+      <div className="relative z-10 max-w-8xl mx-auto px-8">
+        {/* Header */}
+        <div className="max-w-3xl mb-20">
+          <span className="inline-flex rounded-full bg-white/5 px-4 py-1 text-sm text-green-500 mb-6 font-handwriting">
             Projects
-            <span className="absolute left-0 -bottom-2 w-full h-[6px] bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%226%22><path d=%22M0,3 Q20,0 40,3 T80,3 T120,3%22 stroke=%22%23000000%22 stroke-width=%222%22 fill=%22none%22 stroke-linecap=%22round%22/></svg>')] bg-no-repeat bg-contain" />
           </span>
-        </h2>
-      </div>
+          <h2 className="text-4xl md:text-5xl font-semibold text-white">
+            Selected work
+          </h2>
+          <p className="mt-6 text-lg text-white/60">
+            Centered active project with smooth transitions.
+          </p>
+        </div>
 
-      {/* Projects Grid */}
-      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-14 place-items-center">
-        {projects.map((p, i) => {
-          const tape = tapeColors[i % tapeColors.length];
-          const cardColor = cardColors[i % cardColors.length];
-          const tilt = i % 2 === 0 ? "-rotate-2" : "rotate-2";
+        {/* Controls */}
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-sm text-white/60">
+            {active + 1} / {projects.length}
+          </span>
 
-          return (
-            <motion.div
-              key={p.id}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={{
-                rotate: [0, -2, 2, -1, 1, 0],
-                scale: 1.06,
-              }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-              viewport={{ once: true }}
-              className={`relative w-72 h-[480px] ${cardColor} ${tilt}
-                rounded-2xl border-2 border-dashed border-black
-                shadow-[6px_6px_0_rgba(0,0,0,0.35)]`}
+          <div className="flex gap-3">
+            <button
+              onClick={() => scrollToIndex(Math.max(active - 1, 0))}
+              className="h-9 w-9 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:text-white"
             >
-              {/* Tape */}
-              <span
-                className={`absolute -top-4 left-1/2 -translate-x-1/2
-                w-20 h-5 ${tape} rotate-[-6deg] rounded-sm shadow`}
-              />
+              <ArrowLeft size={16} />
+            </button>
+            <button
+              onClick={() =>
+                scrollToIndex(Math.min(active + 1, projects.length - 1))
+              }
+              className="h-9 w-9 rounded-full border border-white/15 flex items-center justify-center text-white/70 hover:text-white"
+            >
+              <ArrowRight size={16} />
+            </button>
+          </div>
+        </div>
 
-              {/* Tag */}
-              <span className="absolute -top-3 left-4 bg-white px-2 py-1 text-xs font-handwriting border border-black rotate-[-5deg]">
-                {p.tags[0] || "Project"}
-              </span>
+        {/* Progress bar */}
+        <div className="mb-12 h-[3px] bg-white/10 rounded-full overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            animate={{
+              width: `${((active + 1) / projects.length) * 100}%`,
+              backgroundColor: accent,
+            }}
+            transition={{ duration: 0.35 }}
+          />
+        </div>
 
-              {/* Inner white sheet */}
-              <div className="m-3 h-[calc(100%-1.5rem)] bg-white rounded-xl border border-black p-4 flex flex-col text-center shadow">
-                <img
-                  src={p.image}
-                  alt={p.title}
-                  className="h-40 w-full object-cover rounded-lg border-2 border-black mb-4"
-                />
+        {/* Carousel */}
+        <div
+          ref={containerRef}
+          onMouseEnter={() => setPaused(true)}
+          onMouseLeave={() => setPaused(false)}
+          className="
+            flex gap-16 overflow-x-auto scrollbar-hide
+            pb-12
+            px-[calc(50%-210px)]
+          "
+        >
+          {projects.map((project, i) => {
+            const offset = i - active;
 
-                <h3 className="font-handwriting font-bold text-lg mb-2">
-                  {p.title}
-                </h3>
+            return (
+              <motion.div
+                key={project.id}
+                className="shrink-0 w-[420px]"
+                animate={{
+                  scale: offset === 0 ? 1.05 : 0.9,
+                  opacity: offset === 0 ? 1 : 0.55,
+                }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+              >
+                <div
+                  className="relative rounded-2xl border border-white/10 bg-neutral-900 overflow-hidden"
+                  style={{
+                    boxShadow:
+                      offset === 0
+                        ? `0 30px 100px ${accent}55`
+                        : "0 15px 40px rgba(0,0,0,0.6)",
+                  }}
+                >
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-[240px] object-contain bg-black"
+                  />
 
-                <p className="text-sm text-gray-700 font-handwriting line-clamp-3 mb-4">
-                  {p.description}
-                </p>
+                  <div className="p-6 space-y-5">
+                    <h3 className="text-xl font-semibold text-white">
+                      {project.title}
+                    </h3>
 
-                <div className="flex flex-wrap gap-2 justify-center mb-5">
-                  {p.tags.map((t) => (
-                    <span
-                      key={t}
-                      className="text-xs px-2 py-1 bg-yellow-100 border border-black rounded-full"
-                    >
-                      {t}
-                    </span>
-                  ))}
+                    <p className="text-sm text-white/60">
+                      {project.description}
+                    </p>
+
+                    <div className="flex flex-wrap gap-2">
+                      {project.tags.slice(0, 6).map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-xs px-3 py-1 rounded-full bg-white/5 border border-white/10 text-white/70"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {project.link && (
+                      <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-sm font-medium"
+                        style={{ color: project.accentColor }}
+                      >
+                        View case study
+                        <ArrowRight size={14} />
+                      </a>
+                    )}
+                  </div>
                 </div>
-
-                {p.link && (
-                  <Link
-                    to={p.link}
-                    className="mt-auto inline-flex items-center justify-center gap-2 px-4 py-2
-                      bg-black text-white rounded-full hover:scale-105 transition font-medium"
-                  >
-                    View Project
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
