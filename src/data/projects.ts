@@ -18,9 +18,29 @@ import project8 from "../assets/projects/p8.jpg";
 import project10 from "../assets/projects/p9.jpeg";
 import project11 from "../assets/projects/p10.jpeg";
 import project12 from "../assets/projects/p11.jpeg";
+import project13 from "../assets/projects/SehatAI.jpeg";
+
 
 
 export const projects: Project[] = [
+  {
+    id: 1,
+    title: "AI Medical Symptom Triage System",
+    description:
+      "End-to-end Python AI application for medical symptom triage in India. Built with LangChain RAG pipeline, ChromaDB vector database, FastAPI REST backend, and Streamlit frontend. Uses OpenAI GPT-3.5 with safety guardrails, emergency detection, and real-time urgency classification. Architecture follows production Python project structure.",
+    tags: [
+      "Python",
+      "FastAPI",
+      "LangChain",
+      "OpenAI API",
+      "RAG",
+      "ChromaDB",
+      "HuggingFace",
+    ],
+    accentColor: "#3b82f6", // green
+    link: "https://pixel-neon-pi.vercel.app/",
+    image: project13,
+  },
   {
     id: 1,
     title: "Pikxl – AI Image Generation Marketplace",

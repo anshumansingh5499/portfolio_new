@@ -11,9 +11,20 @@
 @tailwind utilities;
 
 body, html {
-  background-color: #fffdf7;
+  background-color: #0000;
     font-family: "Bricolage Grotesque", sans-serif;
 
+}
+html, body {
+  overflow-x: hidden;
+  scrollbar-width: none; 
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; 
+}
+html, body {
+  overflow-x: hidden;
 }
 
 .bricolage-grotesque {
@@ -43,19 +54,6 @@ body, html {
 }
 
 
-/* --------------------------------------------------
-   5. Backgrounds & Textures
--------------------------------------------------- */
-.paper-texture {
-  background-image: url("https://www.transparenttextures.com/patterns/paper-fibers.png");
-  background-size: cover;
-}
-
-.corkboard-bg {
-  background-image: url("https://www.transparenttextures.com/patterns/cork-board.png");
-  background-size: 300px 300px;
-  background-repeat: repeat;
-}
 
 /* --------------------------------------------------
    6. Borders & Cards
