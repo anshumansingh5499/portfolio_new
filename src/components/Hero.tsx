@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "framer-motion";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { ArrowUpRight, Download, ChevronDown } from "lucide-react";
+import { ArrowUpRight, Download,  } from "lucide-react";
 
 /* ─────────────────────────────────────────
    REPLACE THIS with your real Google Drive

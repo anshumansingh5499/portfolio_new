@@ -10,7 +10,7 @@ const SOCIALS = [
 
 export const Contact = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [focused, setFocused] = useState<string | null>(null);
+  const [, setFocused] = useState<string | null>(null);
   const [sent,    setSent]    = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
