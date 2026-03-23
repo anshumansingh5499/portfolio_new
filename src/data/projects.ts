@@ -38,7 +38,7 @@ export const projects: Project[] = [
       "HuggingFace",
     ],
     accentColor: "#3b82f6", // green
-    link: "https://pixel-neon-pi.vercel.app/",
+    link: "https://sehatai.streamlit.app/",
     image: project13,
   },
   {
@@ -58,6 +58,24 @@ export const projects: Project[] = [
     accentColor: "#22c55e", // green
     link: "https://pixel-neon-pi.vercel.app/",
     image: project1,
+  },
+  {
+    id: 4,
+    title: "Profind",
+    description:
+      "Profind is a modern job discovery platform that aggregates remote, hybrid, and onsite opportunities into a single interface. It features smart filtering, real-time API integration, and efficient state management to help users quickly find relevant roles with a clean and responsive UI.",
+    tags: [
+      "React",
+      "API Integration",
+      "Material UI",
+      "Zustand",
+      "Job Portal",
+      "State Management",
+      "Accessibility",
+    ],
+    accentColor: "#06b6d4", // cyan
+    link: "https://profindai.vercel.app/",
+    image: project11,
   },
   {
     id: 2,
@@ -95,24 +113,7 @@ export const projects: Project[] = [
     link: "https://passclub.in/",
     image: project4,
   },
-  {
-    id: 4,
-    title: "Profind",
-    description:
-      "Profind is a modern job discovery platform that aggregates remote, hybrid, and onsite opportunities into a single interface. It features smart filtering, real-time API integration, and efficient state management to help users quickly find relevant roles with a clean and responsive UI.",
-    tags: [
-      "React",
-      "API Integration",
-      "Material UI",
-      "Zustand",
-      "Job Portal",
-      "State Management",
-      "Accessibility",
-    ],
-    accentColor: "#06b6d4", // cyan
-    link: "https://profindai.vercel.app/",
-    image: project11,
-  },
+ 
   {
     id: 5,
     title: "BharatServices",
